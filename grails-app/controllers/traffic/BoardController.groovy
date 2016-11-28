@@ -78,7 +78,7 @@ class BoardController {
     }
 
     def index() { 
-        Board b = new Board("/tmp/config")
+        Board b = new Board(true)
         session.board = b
         for (Piece p : b.getPieces()) {
             b.storeMoves(p)

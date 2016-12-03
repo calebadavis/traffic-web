@@ -96,10 +96,11 @@ class BoardController {
         Board b = session.board
 		if (b != null) { 
 		
-			// Squirrel away the current board layout, so we can restore it
-			// once we're done solving
-			// A MoveNode is a convenient way to store a board layout
-            def curLayout = new MoveNode(null, null, MoveDir.NONE, b.pieceLocs())
+            // Squirrel away the current board layout, so we can restore it
+            // once we're done solving
+            // A MoveNode is a convenient way to store a board layout
+            def curLayout = 
+                new MoveNode(null, null, MoveDir.NONE, b.pieceLocs())
         
             // Build up the MoveNode tree until a solution is found:
             MoveNode solved = b.solve()
@@ -143,7 +144,12 @@ class BoardController {
         }
 		
 		// Pass data to the .GSP processing layer
-        [webPieceList:_webPieces(b), height:b.getHeight(), width:b.getWidth()]
+        [
+            webPieceList:_webPieces(b),
+            solvedLayout:_solvedLayout(b), 
+            height:b.getHeight(), 
+            width:b.getWidth()
+        ]
     }
 
 	/**
@@ -171,6 +177,53 @@ class BoardController {
         webPieces
     }
 
+	/**
+	 * Helper method to convert the solved layout into a WebPiece array.
+	 * Note that the resulting WebPiece instances have no ID, as the solved
+	 * layout only dictates where any piece of a particular type might be found
+	 * 
+	 * @param b the Board instance containing a solved layout
+	 * @return an array of WebPiece instances
+	 */
+	private ArrayList<WebPiece> _solvedLayout(Board b) {
+		
+		// We need Board width to calculate the 2D position of a piece from
+		// its absolute index in the 1D solved layout
+		def bWidth = b.getWidth()
+		
+		// The ArrayList to return
+		def wpa = []
+		
+		// We need to get PieceType instances from the type ids in the solution
+		def pTypes = b.getTypes()
+		
+		// The PieceType
+		def pt
+
+		// Walk the solution array, looking for PieceType ids
+        b.getSolvedBoard().eachWithIndex { num, idx ->
+			
+			// Skip if empty
+			if (num != -1) {
+
+                // Get the PieceType (for height/width)
+                pt = pTypes.get(num)
+				
+				// Create the WebPiece, add it to the list
+				wpa << new WebPiece(
+					id: -1, 
+					xPos: idx % bWidth,
+					yPos: idx / bWidth,
+					width: pt.getWidth(),
+					height: pt.getHeight()
+			    )	
+			} 
+		}
+		
+		// return the list
+		wpa
+	}
+	
 	/**
 	 * Helper function to generate a WebPiece containing the important data
 	 * for a piece on the board

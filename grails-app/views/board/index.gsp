@@ -225,7 +225,7 @@ This file is intended to be rendered by a Grails controller
           onkeyup="keyIsUp(event)"
         >
         
-        <!-- More .GSP magic, creating a <button> element for each piece -->
+        <!-- Grails .GSP magic, creating a <button> element for each piece -->
         <g:each in="${webPieceList}" var="piece">
             <button 
               type="button" 
@@ -238,6 +238,22 @@ This file is intended to be rendered by a Grails controller
                  top:${piece.yPos * 50}px"
             />
         </g:each>
+
+        <!-- More .GSP magic, placing <button> elements showing solution  -->
+        <g:each in="${solvedLayout}" var="piece">
+            <button 
+              type="button" disabled
+              style=
+                "position: absolute;
+                 height:${piece.height * 50}px;
+                 width:${piece.width * 50}px;
+                 left:${(piece.xPos  + 2 + width) * 50}px;
+                 top:${piece.yPos * 50}px"
+            />
+        </g:each>
+
+
+
         </div>
         <button type="button" id="solve">Solve</button>
         <button type="button" id="next">Next</button>

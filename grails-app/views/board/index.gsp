@@ -8,7 +8,9 @@ This file is intended to be rendered by a Grails controller
 <html>
     <head>
         <!-- Use the latest jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script 
+         src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+        </script>
         <script>
         $(document).ready(function() {
 
@@ -63,6 +65,7 @@ This file is intended to be rendered by a Grails controller
             if (status == "success") {
                 window.solution = data;
                 window.curMove = 0;
+                $("#next").prop("disabled", false);
             }
         }
 
@@ -85,6 +88,8 @@ This file is intended to be rendered by a Grails controller
         		window.solution = null;
         		window.curMove = 0;
         		return;
+        		$("#next").prop("disabled", true);
+        		$("#solve").prop("disabled", true);
             }
 
             // Otherwise fire off the same AJAX call to the board controller
@@ -135,6 +140,8 @@ This file is intended to be rendered by a Grails controller
                     if (status == "success") {
                         window.solution = null;
                         window.curMove = 0;
+                        $("#next").prop("disabled", true);
+                        $("#solve").prop("disabled", false);
                     }
 
                     // Finally update the board with the results of the move
@@ -220,7 +227,7 @@ This file is intended to be rendered by a Grails controller
           style=
             "position: relative; 
              height:${height * 50}px;
-             width:${width * 50}px"
+             width:${(width * 2 + 2) * 50}px"
           onkeydown="keyIsDown(event)"
           onkeyup="keyIsUp(event)"
         >
@@ -252,12 +259,16 @@ This file is intended to be rendered by a Grails controller
             />
         </g:each>
 
-
-
         </div>
         <button type="button" id="solve">Solve</button>
-        <button type="button" id="next">Next</button>
-        <input type="checkbox" id="altDir" name="altDir" value="altDir">Move other way
-    </body>
+        <button type="button" disabled id="next">Next</button>
+        <input 
+            type="checkbox" 
+            id="altDir" 
+            name="altDir" 
+            value="altDir"
+        />
+        Move other way
     </div>
+    </body>
 </html>
